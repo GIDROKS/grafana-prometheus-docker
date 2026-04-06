@@ -1,28 +1,62 @@
 # Grafana + Prometheus (Docker)
 
-Минимальный стек под Windows с Docker Desktop: Prometheus, Grafana, готовый datasource и дашборд «Windows — обзор».
+Готовый стек для **Docker Desktop на Windows** (подойдёт и Linux/macOS): **Prometheus**, **Grafana**, автоматически подключённый datasource и дашборд **«Windows — обзор»**.
 
-## Запуск
+**Репозиторий:** https://github.com/GIDROKS/grafana-prometheus-docker
+
+## Требования
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (или Docker Engine + Compose v2)
+- Свободные порты **3000** (Grafana) и **9090** (Prometheus)
+
+## Быстрый старт
 
 ```bash
-git clone <ссылка-на-этот-репозиторий>.git
+git clone https://github.com/GIDROKS/grafana-prometheus-docker.git
 cd grafana-prometheus-docker
 docker compose up -d
 ```
 
-- **Prometheus:** http://localhost:9090  
-- **Grafana:** http://localhost:3000 — логин `admin`, пароль `admin` (поменяй после входа).
+Открой в браузере:
 
-## Windows-метрики (опционально)
+| Сервис     | URL                     |
+|-----------|-------------------------|
+| Prometheus | http://localhost:9090  |
+| Grafana    | http://localhost:3000  |
 
-Дашборд рассчитан на [windows_exporter](https://github.com/prometheus-community/windows_exporter/releases) на порту **9182** на той же машине, где Docker Desktop. Можно поставить MSI или запустить `start-windows-exporter.ps1` рядом с скачанным `windows_exporter.exe`.
+**Вход в Grafana:** `admin` / `admin` — после первого входа лучше сменить пароль.
 
-Без экспортера Prometheus и Grafana работают, но графики Windows будут пустыми.
-
-## Остановка
+Остановка:
 
 ```bash
 docker compose down
 ```
 
-Данные Prometheus/Grafana лежат в Docker volumes (`prometheus_data`, `grafana_data`).
+Полное удаление контейнеров **и** данных метрик/дашбордов:
+
+```bash
+docker compose down -v
+```
+
+## Windows-метрики (опционально)
+
+Дашборд использует метрики [windows_exporter](https://github.com/prometheus-community/windows_exporter/releases) на **порту 9182** на хосте (там же, где крутится Docker Desktop). Prometheus в контейнере ходит на хост через **`host.docker.internal`**.
+
+- Скачай **MSI** или **exe** с релизов windows_exporter.
+- Рядом с репозиторием положи `windows_exporter.exe` и при необходимости запусти **`start-windows-exporter.ps1`** (или установи службу через MSI от администратора).
+
+Без экспортера стек работает, но панели про CPU/RAM/диски будут без данных.
+
+## Документация
+
+- **[DOCS.md](DOCS.md)** — структура проекта, конфигурация, типичные проблемы.
+- **[Как_поставить_Prometheus_на_Windows.md](Как_поставить_Prometheus_на_Windows.md)** — если нужен Prometheus **без Docker** (NSSM, служба Windows).
+
+## Официальные ссылки
+
+- [Prometheus — установка (в т.ч. Docker)](https://prometheus.io/docs/prometheus/latest/installation/)
+- [Grafana — Docker образ](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/)
+
+## Лицензия
+
+Конфигурации в репозитории — на твоё усмотрение; образы Prometheus и Grafana под их собственными лицензиями.
