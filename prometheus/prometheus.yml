@@ -7,6 +7,10 @@ scrape_configs:
     static_configs:
       - targets: ["prometheus:9090"]
 
+  - job_name: loki
+    static_configs:
+      - targets: ["loki:3100"]
+
   # Метрики с Windows-хоста (Docker Desktop: host.docker.internal → хост)
   - job_name: windows
     static_configs:
